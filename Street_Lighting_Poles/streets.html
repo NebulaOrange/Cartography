@@ -5,10 +5,26 @@
   <title>My map</title>
   <link href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
-  <style> body { margin: 0; } #map { position: absolute; inset: 0; } </style>
+  <style> 
+  body { margin: 0; } #map { position: absolute; inset: 0; } 
+  #legend { position: absolute; left: 10px; bottom: 30px;
+              width: 220px; padding: 8px; background: white; }
+  #dot { width: 20px; height:20px; border-radius: 50%; background-color:#E8A74B ; }
+  .legend-item { display: flex; align-items: center; gap: 8px; margin-top: 8px;}
+
+  </style>
+
 </head>
 <body>
   <div id="map"></div>
+  <div id="legend">
+  <strong>Legend</strong>
+  <div class="legend-item">
+      <span id="dot"></span>
+      <span>Street lighting poles</span>
+    </div>
+    
+  </div>
   <script>
     const map = new maplibregl.Map({
       container: 'map',
