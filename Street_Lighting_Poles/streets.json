@@ -39,6 +39,7 @@
         true,
         false
       ],
+      "layout": {"visibility": "visible"},
       "paint": {"fill-color": "rgb(230, 233, 229)"}
     },
     {
@@ -169,7 +170,11 @@
           ["==", ["get", "class"], "motorway"]
         ]
       ],
-      "layout": {"line-cap": "butt", "line-join": "miter"},
+      "layout": {
+        "line-cap": "butt",
+        "line-join": "miter",
+        "visibility": "visible"
+      },
       "paint": {
         "line-color": "rgb(213, 213, 213)",
         "line-opacity": 1,
@@ -657,7 +662,7 @@
           ["match", ["get", "brunnel"], ["tunnel"], false, true]
         ]
       ],
-      "layout": {"line-join": "round"},
+      "layout": {"line-join": "round", "visibility": "visible"},
       "paint": {"line-color": "#dddddd", "line-width": 3}
     },
     {
@@ -817,7 +822,11 @@
           ["==", ["get", "class"], "motorway"]
         ]
       ],
-      "layout": {"line-cap": "butt", "line-join": "miter"},
+      "layout": {
+        "line-cap": "butt",
+        "line-join": "miter",
+        "visibility": "visible"
+      },
       "paint": {
         "line-color": "rgb(213, 213, 213)",
         "line-dasharray": [2, 0],
@@ -856,7 +865,11 @@
           ["==", ["get", "class"], "motorway"]
         ]
       ],
-      "layout": {"line-cap": "round", "line-join": "round"},
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round",
+        "visibility": "visible"
+      },
       "paint": {
         "line-color": [
           "interpolate",
@@ -961,7 +974,8 @@
         "text-font": ["Noto Sans Italic"],
         "text-letter-spacing": 0.2,
         "text-max-width": 5,
-        "text-size": 14
+        "text-size": 14,
+        "visibility": "visible"
       },
       "paint": {
         "text-color": "hsl(0,0%,66%)",
@@ -1048,7 +1062,8 @@
         ],
         "text-font": ["Noto Sans Regular"],
         "text-rotation-alignment": "map",
-        "text-size": ["interpolate", ["linear"], ["zoom"], 13, 12, 14, 13]
+        "text-size": ["interpolate", ["linear"], ["zoom"], 13, 12, 14, 13],
+        "visibility": "visible"
       },
       "paint": {
         "text-color": "hsl(30,0%,62%)",
@@ -1155,7 +1170,8 @@
         "text-field": ["to-string", ["get", "ref"]],
         "text-font": ["Noto Sans Regular"],
         "text-rotation-alignment": "viewport",
-        "text-size": 10
+        "text-size": 10,
+        "visibility": "none"
       }
     },
     {
@@ -1250,7 +1266,8 @@
         "text-offset": [0, 0.6],
         "text-optional": true,
         "text-padding": 2,
-        "text-size": 12
+        "text-size": 12,
+        "visibility": "none"
       },
       "paint": {
         "text-color": "#666",
