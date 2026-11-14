@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Vancouver Public Washrooms</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.15.0/dist/maplibre-gl.css"
+    />
+    <style>
+      #legend-box { margin: 15px; padding: 8px; background: white; }
+      #legend { display: flex; flex-wrap: wrap; column-gap: 20px; }
+      .legend-item { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+      .dot { width: 20px; height: 20px; border-radius: 50%; }
+    </style>
+  </head>
+
+  <body>
+    <div id="mapid" style="width: 100%; height: 500px;"></div>
+
+    <!-- A text box and two buttons below the map. -->
+    <div id="controls" style="margin: 15px;">
+      <button id="showAllButton">Show All</button>
+
+      <span style="display: inline-block; width: 30px;"></span>
+      <input type="text" id="textEntry" placeholder="e.g. Stanley Park">
+      <button id="searchButton">Search</button>
+    </div>
+
+    <!-- The legend: one coloured dot for each type. -->
+    <div id="legend-box">
+    <strong>Legend</strong>
+      <div id="legend"></div>
+    </div>
+
+    <script type="module">
+      import * as maplibregl from 'https://cdn.jsdelivr.net/npm/maplibre-gl@6.15.0/dist/maplibre-gl.mjs';
+
+      const map = new maplibregl.Map({
+        container: 'mapid',
+        center: [-123.12, 49.26],
+        zoom: 11,
+        style: 'Washroom.json'
+      });
+
+      window.map = map;
+
+      // The GeoJSON file, in the seperate file.
+      const url = 'public-washrooms.geojson';
+
+      // One colour for each type.
+      const typeColors = {
+        
+        'ComfortStation': '#0279B1',
+        'Community Center': '#61A644',
+        'Compostable': '#789B55',
+        'SmallAPT': '#5AB6B2',
+        'LargeAPT': '#4D8C3F',
+        'Park - Golf': '#8C6BB1',
+        'Park - Field House': '#872A90',
+        'Park - Other Facilities': '#784E28',
+        'Park - Portland Loo': '#F6B332',
+        'Park - Portable Toilet': '#FCD700',
+        'Park - Public Washroom': '#FF5099',   
+        'Park - Washroom - Events Only': '#A66A3F',
+        'Park - Vancouver Aquatic Center': '#C21F32',
+        'Staff': '#607D8B',
+        'Other Facility': '#1E366C',
+        'Other Facilities': '#1E366C'
+        
+      };
+
+      // Make the colour expression
+      const colorExpression = ['match', ['get', 'type']];
+      for (const type in typeColors) {
+        colorExpression.push(type, typeColors[type]);
+      }
+      colorExpression.push('#777777');   // make any other type as grey
+
+      const washroomPaint = {
+        'circle-radius': 7,
+        'circle-color': colorExpression,
+        'circle-stroke-color': '#ffffff',
+        'circle-stroke-width': 1.3
+      };
+
+      // Legend: add one row for each type.
+      function makeLegend() {
+        const legend = document.getElementById('legend');
+        for (const type in typeColors) {
+          legend.innerHTML = legend.innerHTML +
+            '<div class="legend-item">' +
+            '<span class="dot" style="background-color:' + typeColors[type] + '"></span>' +
+            '<span>' + type + '</span>' +
+            '</div>';
+        }
+      }
+
+      // When someone clicks a point, show all its properties in a popup.
+      function onEachWashroom(e) {
+        const properties = e.features[0].properties;
+        let text = '';
+        for (const name in properties) {
+          if (name !== 'geo_point_2d'){
+            text = text + '<div><strong>' + name + ':</strong> ' + properties[name] + '</div>';
+          }
+        }
+        const popup = new maplibregl.Popup();
+        popup.setLngLat(e.lngLat);
+        popup.setHTML(text);
+        popup.addTo(map);
+      }
+
+      function addWashrooms() {
+        if (map.getSource('washrooms')) {
+          return;
+        }
+
+        map.addSource('washrooms', {
+          type: 'geojson',
+          data: url
+        });
+
+        map.addLayer({
+          id: 'washroom-points',
+          type: 'circle',
+          source: 'washrooms',
+          paint: washroomPaint
+        });
+
+        map.on('click', 'washroom-points', onEachWashroom);
+      }
+
+      // Show All: every point is drawn.
+      function showAll() {
+        map.setFilter('washroom-points', null);
+      }
+
+      // Search: keep the points where the text appears in the type,
+      // the park name, the location or the neighbourhood.
+      function search() {
+        const text = document.getElementById('textEntry').value.toLowerCase();
+        if (text === '') {
+          showAll();
+          return;
+        }
+        map.setFilter('washroom-points', [
+          'any',
+          ['in', text, ['downcase', ['to-string', ['get', 'type']]]],
+          ['in', text, ['downcase', ['to-string', ['get', 'park_name']]]],
+          ['in', text, ['downcase', ['to-string', ['get', 'location']]]],
+          ['in', text, ['downcase', ['to-string', ['get', 'geo_local_area']]]]
+        ]);
+      }
+
+      map.on('load', function () {
+        addWashrooms();
+        makeLegend();
+        document.getElementById('showAllButton').addEventListener('click', showAll);
+        document.getElementById('searchButton').addEventListener('click', search);
+      });
+    </script>
+  </body>
+</html>
