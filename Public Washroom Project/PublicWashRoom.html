@@ -54,7 +54,7 @@
       const typeColors = {
         
         'ComfortStation': '#0279B1',
-        'Community Center': '#62E5D0',
+        'Community Center': '#07FF00',
         'Compostable': '#E4FF00',
         'SmallAPT': '#5AB6B2',
         'LargeAPT': '#4D8C3F',
@@ -68,7 +68,7 @@
         'Park - Vancouver Aquatic Center': '#C21F32',
         'Staff': '#607D8B',
         'Other Facility': '#1E366C',
-        'Other Facilities': '#281B25'
+        'Other Facilities': '#8862E5'
         
       };
 
@@ -86,7 +86,7 @@
         'circle-stroke-width': 1.3
       };
 
-      // Legend: add one row for each type.
+      // add legends
       function makeLegend() {
         const legend = document.getElementById('legend');
         for (const type in typeColors) {
@@ -98,7 +98,7 @@
         }
       }
 
-      // When someone clicks a point, show all its properties in a popup.
+      // When user clicks a point, show all its properties in a popup excepts geo point.
       function onEachWashroom(e) {
         const properties = e.features[0].properties;
         let text = '';
@@ -113,6 +113,7 @@
         popup.addTo(map);
       }
 
+      // add those point into map
       function addWashrooms() {
         if (map.getSource('washrooms')) {
           return;
@@ -138,7 +139,7 @@
         map.setFilter('washroom-points', null);
       }
 
-      // Search: keep the points where the text appears in the type,
+      // Search: keep the points where the text match,
       // the park name, the location or the neighbourhood.
       function search() {
         const text = document.getElementById('textEntry').value.toLowerCase();
